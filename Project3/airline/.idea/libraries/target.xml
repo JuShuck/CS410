@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="target">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/target/airline-1.0-SNAPSHOT-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/original-airline-1.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/airline-1.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/airline-1.0-SNAPSHOT-test-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/target/airline-1.0-SNAPSHOT-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
