@@ -168,7 +168,13 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
         //Otherwise return the status found above
         return matchStatus;
     }
+
+    /**
+     * Pretty prints the single flight
+     * @return  String of the pretty printed flight
+     */
     public String print(){
-        return this.toString() +  ". And it takes 5 in minutes.\n";
+        PrettyPrint p = new PrettyPrint();
+        return p.formPrettySentence(this.flightNum, this.source, this.departTime, this.destination, this.arriveTime);
     }
 }

@@ -28,30 +28,28 @@ public class AirlineRestClient extends HttpRequestHelper
     }
 
     /**
-     * Returns all keys and values from the server
+     * Searchs for the flight based on the name, source and destination
+     * @param airline       The airline name
+     * @param src           3-Letter source code
+     * @param dest          3-Letter Arrival code
+     * @return              The response from the given parameters
+     * @throws IOException
      */
-    public Response getAllKeysAndValues() throws IOException
-    {
-        return get(this.url );
-    }
-
-    /**
-     * Returns all values for the given key
-     */
-    public Response getValues( String key ) throws IOException
-    {
-        return get(this.url, "key", key);
-    }
-
-    public Response addKeyValuePair( String key, String value ) throws IOException
-    {
-        return post( this.url, "key", key, "value", value );
-    }
-
     public Response searchFlight(String airline, String src, String dest) throws IOException{
         return get(this.url, "name", airline, "src", src, "dest", dest);
     }
 
+    /**
+     * Adds a flight to the server
+     * @param airlineName       Airline name
+     * @param flightNumber      Flight number
+     * @param source            3-Letter source code
+     * @param departTime        Departure time MM/dd/yyyy hh:mm a
+     * @param dest              3-Letter destination code
+     * @param arriveTime        Arrival time MM/dd/yyyy hh:mm a
+     * @return                  The post of the information
+     * @throws IOException
+     */
     public Response addFlight(String airlineName, String flightNumber, String source, String departTime, String dest, String arriveTime) throws IOException{
         return post(this.url, "name", airlineName, "num", flightNumber, "src", source, "departTime", departTime,
                 "dest", dest, "arriveTime", arriveTime);

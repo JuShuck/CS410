@@ -16,129 +16,188 @@ import java.net.HttpURLConnection;
 public class Project4 {
 
     static final String MISSING_COMMAND_ARGS = "ERROR: Missing command line arguments";
-    static final String README = "This is a sample readme";
+    static final String README = "      usage: java Project4 [options <args>\n" +
+            "        args are (in this order): \n" +
+            "          name          The name of the airline\n" +
+            "          flightNumber  The flight number \n" +
+            "          src           Three-letter code of arrival airport\n" +
+            "          departTime    Departure data/time MM/dd/yyyy hh:mm a\n" +
+            "          dest          Three-letter code of arrival airport\n" +
+            "          arriveTime    Arrival data/time MM/dd/yyyy hh:mm a\n" +
+            "        Options are:\n" +
+            "          -host hostName Host computer on which the server runs\n" +
+            "          -port port     Port on which the server is listening\n" +
+            "          -search        Search for flights\n" +
+            "          -print         Prints a description of the new flight\n" +
+            "          -REDME         Prints a README for this project and exits";
 
 
     public static void main(String... args) throws BadAttributeValueExpException {
-        //String hostName = null;
-        //String portString = null;
-        String key = "ello";
-        String value = "world";
+        //Check for the README flag and then exit
         if(checkForFlag(args, "-README")) {
             System.out.println(README);
             System.exit(0);
         }
 
+        //Try getting the host name(string) and port(int)
+        //will return null and -1 respectively if the flag are not specified
+        String hostName = getHostName(args);
+        int port = getPortName(args);
+
+        // Then Host/Port are not specified, continue as Program 1
+        if(hostName == null && port == -1) {
+            verifyArgs(args);
+
+            //Parse args and add an airline
+            Flight f = parseArgs(args);
+            Airline a = new Airline(getAirlineName(args));
+            a.addFlight(f);
+
+            //print if the flag is available
+            if(checkForFlag(args, "-print"))  {
+                System.out.println(f.print());
+            }
+
+            System.exit(0);
+        }
+
+        //
+        if(checkForFlag(args, "-search")) {
+            //verifys the argument since the arg order is different in search
+            verifySearch(args);
+            //Gets the airline name since the arg order is different in search
+            String airlineName = getAirlineName(args);
+
+            handleSearch(args, airlineName, hostName, port);
+            System.exit(0);
+        }
+
         verifyArgs(args);
         String airlineName = getAirlineName(args);
-        System.out.println(airlineName);
 
-        //@TODO for seach
-        /*if(args.length < 9){
-            int port = getPortName(args);
-            String hostName = getHostName(args);
+        Flight flight = parseArgs(args);
+
+        if(checkForFlag(args, "-print")) {
+            System.out.println(flight.print());
+        }
+
+        AbstractAirline airline = new Airline(airlineName);
+        airline.addFlight(flight);
+
+        AirlineRestClient client = new AirlineRestClient(hostName, port);
+
+        HttpRequestHelper.Response response;
+        //Try to add a flight to the client, error out if cannot connect to server
+        try {
+            response = client.addFlight(airlineName, Integer.toString(flight.getNumber()), flight.getSource(), flight.getDepartureString(), flight.getDestination(), flight.getArrivalString());
+            checkResponseCode(HttpURLConnection.HTTP_OK, response);
+        } catch (IOException ex) {
+            error("While contacting server: " + ex);
+            return;
+        }
+        System.exit(0);
+    }
+
+    /**
+     * Verify the arguments when using the -search option
+     * @param args
+     */
+    private static void verifySearch(String[] args) {
+        //Hold the number of flag and expected optional args
+        int count = 0;
+
+        //Search must indicate a host and port, if they don't error out
+        if(checkForFlag(args,"-host")) {
+            count = count + 2;
+        } else {
+            usage("ERROR: Host not specified");
+        }
+
+        if(checkForFlag(args,"-port")) {
+            count = count +2;
+        } else {
+            usage("ERROR: Port not specified");
+        }
+
+        //Search for other flags
+        if(checkForFlag(args, "-print")) {
+            count++;
+        }
+        if(checkForFlag(args, "-search")) {
+            count++;
+        }
+
+        //Since there are only 3 mandatory args, error with a high or low if they are not equal to args passed in
+        if((count+3) > args.length) {
+            usage(MISSING_COMMAND_ARGS);
+        }
+        if((count+3) < args.length) {
+            usage("ERROR: Too many command line arguments");
+        }
+    }
+
+    /**
+     * Handles the search of the verified arguments
+     * @param args          verified arguments
+     * @param airlineName   The airline name to search
+     * @param hostName      the hostname to connect to
+     * @param port          the listening port
+     */
+    private static void handleSearch(String[] args,String airlineName, String hostName, int port) {
+        try {
+            int size = args.length;
+
+            //Get the source and destination and ensure they're valid locations
+            String src = args[size - 2];
+            String dest = args[size - 1];
+            sanitizeLocation(src);
+            sanitizeLocation(dest);
+
 
             AirlineRestClient client = new AirlineRestClient(hostName, port);
 
             HttpRequestHelper.Response response;
+            //Try to search for flight based on the airline name, source and destination
             try{
-                response = client.searchFlight(airlineName, src, destination);
-            }catch (IOException ex) {
+                response = client.searchFlight(airlineName, src, dest);
+            } catch (IOException ex) {
                 error("While contacting server: " + ex);
                 return;
             }
 
             System.out.println(response.getContent());
-
             System.exit(0);
 
-
-        }
-        else {*/
-//            String hostName = null;
-//            String portString = null;
-
-//            if (argsToCreateAirLine.length < 10) {
-//                System.err.println("Missing arguments to create an airline");
-//                System.exit(1);
-//            }
-            String hostName = getHostName(args);
-            int port = getPortName(args);
-
-            //String departure = dateAndTimeFormatInString(departDay, departTime, ampm);
-            //String arrival = dateAndTimeFormatInString(arriveDay, arriveTime, ampm1);
-
-            Flight flight = parseArgs(args);
-
-            /*if(isPrint && isSearch){
-                System.err.println("Can't handle both print and search in the same time");
-                System.exit(1);
-            }*/
-            System.out.println(flight.print());
-            /*if(isPrint){
-                System.out.println(flight.print());
-            }*/
-
-
-            AbstractAirline abstractAirline = new Airline(airlineName);
-            abstractAirline.addFlight(flight);
-            System.out.println(hostName +"/"+port);
-            AirlineRestClient client = new AirlineRestClient(hostName, port);
-
-            HttpRequestHelper.Response response;
-            try {
-                response = client.addFlight(airlineName, Integer.toString(flight.getNumber()), flight.getSource(), flight.getDepartureString(), flight.getDestination(), flight.getArrivalString());
-                System.out.println("Flight added");
-                checkResponseCode(HttpURLConnection.HTTP_OK, response);
-
-            } catch (IOException ex) {
-                error("While contacting server: " + ex);
-                return;
-            }
-            System.out.println("1"+response.getContent());
-
-
-            System.exit(0);
-    }
-
-    private static String getAirlineName(String[] args) {
-        try {
-            return args[args.length - 10];
         } catch (ArrayIndexOutOfBoundsException e) {
             usage(MISSING_COMMAND_ARGS);
         }
+    }
+
+    /**
+     * Find the airline named based on the mandatory arguments
+     * @param args      The args passed in
+     * @return          The airline name || null for a not found airline name
+     */
+    private static String getAirlineName(String[] args) {
+        try {
+            //Search has a different order, thus it's at arg.length -3 instead of -10
+            if(checkForFlag(args, "-search")) {
+                return args[args.length - 3];
+            }
+            return args[args.length - 10];
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            usage(MISSING_COMMAND_ARGS);
+        }
+        //Default return value (Airline name not found)
         return null;
     }
 
-    private static void postResponse(String hostName, int portNum, String key, String value) {
-        /*AirlineRestClient client = new AirlineRestClient(hostName, portNum);
-
-        HttpRequestHelper.Response response;
-        try {
-            if (key == null) {
-                // Print all key/value pairs
-                response = client.getAllKeysAndValues();
-
-            } else if (value == null) {
-                // Print all values of key
-                response = client.getValues(key);
-
-            } else {
-                // Post the key/value pair
-                response = client.addKeyValuePair(key, value);
-            }
-
-            checkResponseCode( HttpURLConnection.HTTP_OK, response);
-
-        } catch ( IOException ex ) {
-            error("While contacting server: " + ex);
-            return;
-        }
-
-        System.out.println(response.getContent());
-
-        System.exit(0);*/
-    }
+    /**
+     * Determines if both -port and -host flag are in the arguments. Will error out if only one or the other are present
+     * @param args      The args passed in
+     * @return          if the port and host flag are both present
+     */
     private static boolean portAndHostFlagPresent(String[] args) {
         if((checkForFlag(args,"-port") && !checkForFlag(args,"-host"))) {
             usage("ERROR: Host not specified");
@@ -176,6 +235,9 @@ public class Project4 {
                 usage("ERROR: Too many arguments");
             }
         }
+        if((count+10) != size) {
+            usage(MISSING_COMMAND_ARGS);
+        }
     }
 
     /**
@@ -187,7 +249,7 @@ public class Project4 {
         try {
             return (args[0].equals(flagName) || args[1].equals(flagName) || args[2].equals(flagName) || args[3].equals(flagName) || args[4].equals(flagName));
         } catch (ArrayIndexOutOfBoundsException e) {
-            usage(MISSING_COMMAND_ARGS);
+            usage("WW"+MISSING_COMMAND_ARGS);
         }
         return false;
     }
@@ -266,15 +328,20 @@ public class Project4 {
         PrintStream err = System.err;
         err.println("** " + message);
         err.println();
-        err.println("usage: java Project4 host port [key] [value]");
-        err.println("  host    Host of web server");
-        err.println("  port    Port of web server");
-        err.println("  key     Key to query");
-        err.println("  value   Value to add to server");
-        err.println();
-        err.println("This simple program posts key/value pairs to the server");
-        err.println("If no value is specified, then all values are printed");
-        err.println("If no key is specified, all key/value pairs are printed");
+        err.println("usage: java Project4 [options <args>");
+        err.println("args are (in this order): ");
+        err.println("  name          The name of the airline");
+        err.println("  flightNumber  The flight number ");
+        err.println("  src           Three-letter code of arrival airport");
+        err.println("  departTime    Departure data/time MM/dd/yyyy hh:mm a");
+        err.println("  dest          Three-letter code of arrival airport");
+        err.println("  arriveTime    Arrival data/time MM/dd/yyyy hh:mm a");
+        err.println("Options are:");
+        err.println("  -host hostName Host computer on which the server runs");
+        err.println("  -port port     Port on which the server is listening");
+        err.println("  -search        Search for flights");
+        err.println("  -print         Prints a description of the new flight");
+        err.println("  -REDME         Prints a README for this project and exits");
         err.println();
 
         System.exit(1);

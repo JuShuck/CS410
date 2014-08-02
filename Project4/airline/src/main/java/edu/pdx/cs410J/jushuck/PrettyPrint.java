@@ -5,14 +5,13 @@ import edu.pdx.cs410J.AirportNames;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by justin on 7/22/2014.
  */
-class PrettyPrinter  {
+class PrettyPrint{
 
 
     /**
@@ -55,15 +54,4 @@ class PrettyPrinter  {
                 + "\n\n";
     }
 
-    /**
-     * Prints the flights to standard out (Opposed to writing it to a text file)
-     * @param airline       The airline inquiring about
-     */
-    public void dumpToStOut(Airline airline) {
-        List<Flight> list = (List<Flight>) airline.getFlights();
-        //Go through each flight and write to Standard out
-        for(Flight f : list) {
-            System.out.println(formPrettySentence(f.getNumber(),f.getSource(),f.getDepartureString(),f.getDestination(),f.getArrivalString()));
-        }
-    }
 }

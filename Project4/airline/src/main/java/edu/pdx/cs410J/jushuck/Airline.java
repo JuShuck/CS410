@@ -50,14 +50,18 @@ public class Airline extends AbstractAirline {
         return flights;
     }
 
+    /**
+     * constructs the Airline and all the Flights
+     * @return      Concated string of the airline and all of its flights
+     */
+    public String constructAirlineAndFlightsString() {
+        String airString = "Airline name: " + airlineName + "\n Flights: \n";
+        PrettyPrint p = new PrettyPrint();
 
-    public String printAirlineAndFlights(){
-        String airString = "Airline name: " + airlineName + " has : \n";
-        PrettyPrinter p = new PrettyPrinter();
+        //Goes through the Airline and prints each flight
         for(int i=0; i<flights.size(); ++i){
             airString +=  p.formPrettySentence(flights.get(i).getNumber(),flights.get(i).getSource(), flights.get(i).getDepartureString(),flights.get(i).getDestination(),flights.get(i).getArrivalString());//flights.get(i).toString()  + ". And it takes 1 in minutes.\n";
         }
-        System.out.println();
         return airString;
     }
 }
