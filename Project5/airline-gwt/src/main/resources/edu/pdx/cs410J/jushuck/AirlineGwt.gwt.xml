@@ -5,4 +5,5 @@
   <entry-point class="edu.pdx.cs410J.jushuck.client.AirlineGwt"/>
 
   <servlet path="/ping" class="edu.pdx.cs410J.jushuck.server.PingServiceImpl"/>
+  <servlet path="/add" class="edu.pdx.cs410J.jushuck.server.AirlineServiceImplementation"/>
 </module>

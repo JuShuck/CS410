@@ -1,24 +1,58 @@
 package edu.pdx.cs410J.jushuck.client;
 
-import edu.pdx.cs410J.AbstractFlight;
 import edu.pdx.cs410J.AbstractAirline;
+import edu.pdx.cs410J.AbstractFlight;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class Airline extends AbstractAirline
 {
-  private Collection<AbstractFlight> flights = new ArrayList<AbstractFlight>();
+    /**
+     * The collection of flights of an Airline
+     */
+    private Collection<AbstractFlight> flights = new ArrayList<AbstractFlight>();
 
-  public String getName() {
-    return "Air CS410J";
-  }
+    /**
+     * The Airline Name
+     */
+    private String airlineName;
 
-  public void addFlight(AbstractFlight flight) {
-    this.flights.add(flight);
-  }
+    /**
+     * Constructor
+     * @param n Sets the Airline Name
+     */
+    public Airline(String n) {
+        airlineName = n;
+    }
 
-  public Collection getFlights() {
-    return this.flights;
-  }
+    /**
+     * Constructor
+     */
+    public Airline() {
+    }
+
+    /**
+     * Getter for airline Name
+     * @return
+     */
+    public String getName() {
+        return airlineName;
+    }
+
+    /**
+     * Adds a flight to the collection of flights
+     * @param flight
+     */
+    public void addFlight(AbstractFlight flight) {
+        this.flights.add(flight);
+    }
+
+    /**
+     * Getter for the Flights
+     * @return
+     */
+    public Collection getFlights() {
+        return this.flights;
+    }
 }

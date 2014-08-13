@@ -9,13 +9,21 @@
     <servlet-name>pingServlet</servlet-name>
     <servlet-class>edu.pdx.cs410J.jushuck.server.PingServiceImpl</servlet-class>
   </servlet>
+    <servlet>
+        <servlet-name>edu.pdx.cs410J.jushuck.AirlineGwt AirlineService</servlet-name>
+        <servlet-class>edu.pdx.cs410J.jushuck.server.AirlineServiceImplementation</servlet-class>
+    </servlet>
 
-  <servlet-mapping>
+    <servlet-mapping>
     <servlet-name>pingServlet</servlet-name>
     <url-pattern>/airline/ping</url-pattern>
   </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>edu.pdx.cs410J.jushuck.AirlineGwt AirlineService</servlet-name>
+        <url-pattern>/airline/add</url-pattern>
+    </servlet-mapping>
 
-  <!-- Default page to serve -->
+    <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>AirlineGwt.html</welcome-file>
   </welcome-file-list>
